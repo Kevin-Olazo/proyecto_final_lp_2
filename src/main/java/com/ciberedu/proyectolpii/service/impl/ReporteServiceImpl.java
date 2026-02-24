@@ -5,6 +5,8 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +26,15 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Override
     public byte[] generarReporte(String nombreArchivo) throws Exception {
-        // 1. Obtener conexión a la base de datos
         Connection conn = dataSource.getConnection();
-
-        // 2. Leer el archivo .jrxml desde src/main/resources/reportes/
         InputStream stream = getClass().getResourceAsStream("/reportes/" + nombreArchivo);
 
-        // 3. Compilar el .jrxml en memoria
-        JasperReport jasperReport = JasperCompileManager.compileReport(stream);
-
-        // 4. Llenar el reporte con datos de la BD
+        // En Azure no hay garantía de poder escribir en disco,
+        // así que compilamos directo en memoria sin caché de archivos
+        JasperDesign design = JRXmlLoader.load(stream);
+        JasperReport jasperReport = JasperCompileManager.compileReport(design);
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, conn);
 
-        // 5. Exportar a PDF y retornar bytes
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 }
