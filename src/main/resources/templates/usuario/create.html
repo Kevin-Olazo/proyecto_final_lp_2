@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Registro')}"></head>
+<body style="display:flex; align-items:center; justify-content:center; min-height:100vh; background:#0a0a0a;">
+
+<div class="login-wrap" style="max-width:440px; width:100%;">
+
+    <div style="text-align:center; margin-bottom:28px;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:5px; color:var(--accent); line-height:1;">ZONA<br>FITNESS</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:3px; margin-top:4px;">REGISTRO DE USUARIO</div>
+    </div>
+
+    <div class="form-wrap" style="max-width:100%;">
+        <div class="form-header">
+            <div class="form-title">// Nuevo Acceso</div>
+        </div>
+
+        <form th:action="@{/register/save}" th:object="${usuario}" method="post">
+            <div class="form-body">
+
+                <div th:if="${param.success}" class="alert alert-success">
+                    ✓ Usuario registrado correctamente.
+                </div>
+
+                <div th:if="${error}" class="alert alert-danger">
+                    ✗ <span th:text="${error}"></span>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="form-group">
+                        <label>Nombres</label>
+                        <input type="text" th:field="*{nombres}" placeholder="Nombres" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos</label>
+                        <input type="text" th:field="*{apellidos}" placeholder="Apellidos" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" th:field="*{username}" placeholder="Nombre de usuario" autocomplete="off" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" th:field="*{clave}" placeholder="••••••••" required>
+                </div>
+
+				<div class="form-group">
+				           <label>Rol</label>
+				           <select th:field="*{rol}">
+				               <option value="">— Seleccionar rol —</option>
+				               <option th:each="r : ${rolList}"
+				                       th:value="${r.idRol}"
+				                       th:text="${r.descripcion}"></option>
+				           </select>
+				       </div>
+
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary">REGISTRAR →</button>
+                <a th:href="@{/}" class="btn btn-outline">CANCELAR</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

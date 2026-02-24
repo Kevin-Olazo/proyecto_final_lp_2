@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Login')}"></head>
+<body style="display:flex; align-items:center; justify-content:center; min-height:100vh; background:#0a0a0a;">
+
+<style>
+    .login-wrap {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .login-brand {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .login-logo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 70px;
+        letter-spacing: 6px;
+        color: var(--accent);
+        line-height: 1;
+    }
+
+    .login-tagline {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+
+    .login-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+    }
+
+    .login-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .login-header-label {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    .login-body {
+        padding: 28px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .login-footer {
+        padding: 14px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .register-link {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 10px;
+        color: var(--muted);
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .register-link a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .register-link a:hover { text-decoration: underline; }
+</style>
+
+<div class="login-wrap">
+    <div class="login-brand">
+        <div class="login-logo">ZONA<br>FITNESS</div>
+    </div>
+
+    <div class="login-box">
+        <div class="login-header">
+            <div class="login-header-label">// Acceso al Sistema</div>
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="login-body">
+
+                <div th:if="${param.error}" class="alert alert-danger">
+                    ✗ Usuario o contraseña incorrectos
+                </div>
+
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" name="username" placeholder="Ingresa tu usuario" autocomplete="off" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="clave" placeholder="••••••••" required>
+                </div>
+
+            </div>
+
+            <div class="login-footer">
+                <button type="submit" class="btn btn-primary" style="width:100%; text-align:center;">
+                    INGRESAR →
+                </button>
+                <div class="register-link">
+                    ¿No tienes cuenta? <a th:href="@{/register}">Registrarse</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

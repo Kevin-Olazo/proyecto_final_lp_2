@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Reporte Planes')}"></head>
+<body>
+
+<div th:replace="~{layout/sidebar :: sidebar('rep-planes')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">PLANES MÁS VENDIDOS</span>
+        
+    </div>
+
+    <div class="content">
+        <div style="background:var(--surface); border:1px solid var(--border); max-width:520px;">
+            <div style="padding:14px 24px; border-bottom:1px solid var(--border);">
+                <div style="font-family:'IBM Plex Mono',monospace; font-size:10px;
+                            color:var(--muted); letter-spacing:3px;">// REPORTE DE PLANES</div>
+            </div>
+            <div style="padding:24px;">
+                <p style="font-size:14px; color:var(--text-dim); margin-bottom:20px; line-height:1.7;">
+                    Genera un PDF con el ranking de planes ordenados por cantidad de ventas.
+                    Incluye el total de inscripciones y los ingresos generados por cada plan.
+                </p>
+                <a th:href="@{/reporte/planes/pdf}" target="_blank" class="btn btn-primary">
+                    GENERAR PDF →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

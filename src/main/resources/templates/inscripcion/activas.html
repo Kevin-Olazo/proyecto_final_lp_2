@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Activas')}"></head>
+<body>
+
+<div th:replace="~{layout/sidebar :: sidebar('activas')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">INSCRIPCIONES ACTIVAS</span>
+        
+    </div>
+
+    <div class="content">
+
+        <div class="stats-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:24px;">
+            <div class="stat-card accent">
+                <div class="stat-label">Activas Hoy</div>
+                <div class="stat-value" th:text="${#lists.size(inscripciones)}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Fecha</div>
+                <div style="font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--text-dim); margin-top:8px;"
+                     th:text="${#temporals.format(#temporals.createToday(), 'dd/MM/yyyy')}"></div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="table-header">
+                <span class="table-label">// Membresías Vigentes</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>DNI</th>
+                        <th>Plan</th>
+                        <th>Inicio</th>
+                        <th>Vence</th>
+                        <th>Total (S/.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="i, stat : ${inscripciones}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${i.cliente.nombres} + ' ' + ${i.cliente.apellidos}"
+                            style="color:var(--text); font-weight:500;"></td>
+                        <td th:text="${i.cliente.dni}"
+                            style="font-family:'IBM Plex Mono',monospace; font-size:12px;"></td>
+                        <td><span class="tag tag-active" th:text="${i.plan.nombre}"></span></td>
+                        <td th:text="${i.fechaInicio}" style="font-family:'IBM Plex Mono',monospace; font-size:12px;"></td>
+                        <td th:text="${i.fechaFin}"    style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent);"></td>
+                        <td th:text="${#numbers.formatDecimal(i.total,1,2)}"
+                            style="color:var(--accent); font-family:'IBM Plex Mono',monospace;"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(inscripciones)}">
+                        <td colspan="7" style="text-align:center; color:var(--muted); padding:28px;">// No hay inscripciones activas hoy</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

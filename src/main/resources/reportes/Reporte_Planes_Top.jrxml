@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Planes_Top" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="20" uuid="37fba666-3743-410d-a800-92ae2ffd4965">
+	<queryString language="SQL">
+		<![CDATA[SELECT nombre_plan, cantidad_vendida, ingreso_total
+        FROM dbgimnasio.vista_planes_mas_vendidos
+        ORDER BY cantidad_vendida DESC]]>
+	</queryString>
+	<field name="nombre_plan" class="java.lang.String"/>
+	<field name="cantidad_vendida" class="java.lang.Long"/>
+	<field name="ingreso_total" class="java.math.BigDecimal"/>
+	<variable name="ingreso_total_REPORT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingreso_total}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="65" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="50" backcolor="#1A237E" uuid="6a7e789a-1b1a-4c12-98ab-3c4a5d6e7f8a"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="15" y="10" width="525" height="30" forecolor="#FFFFFF" uuid="0b0a4e43-1245-4622-9fbd-484d9e00e27b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ZONA FITNESS — Reporte de Planes Más Vendidos]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="25" backcolor="#3F51B5" uuid="42c5c63f-1c18-427f-b7d6-14f375b7fa33"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="15" y="0" width="245" height="25" forecolor="#FFFFFF" uuid="2d432ecc-1b1d-4393-b7ed-2c48536a17da"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="0" width="130" height="25" forecolor="#FFFFFF" uuid="9d491d7e-302f-40fa-b357-5669b00ad908"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VECES VENDIDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="0" width="150" height="25" forecolor="#FFFFFF" uuid="4f463ead-c20e-4850-9ed0-fd93adc4b8d8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INGRESOS (S/.)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="15" y="0" width="245" height="24" uuid="9cc032d8-72d7-4e0d-87b2-f770161a4c6b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_plan}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="0" width="130" height="24" uuid="ba280e0b-9bfb-4497-b1b1-9fbd99ee062b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_vendida}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="390" y="0" width="150" height="24" uuid="7d3bdc20-1ec8-467f-bee9-85f60fccc57e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingreso_total}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="24" width="555" height="1" forecolor="#E0E0E0" uuid="b2a1a1b1-1234-5678-9abc-def012345678"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="40" splitType="Stretch">
+			<rectangle>
+				<reportElement x="260" y="10" width="295" height="25" backcolor="#F5F5F5" uuid="1c1c1c1c-2d2d-3e3e-4f4f-5a5a5a5a5a5a"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement x="0" y="2" width="555" height="1" forecolor="#1A237E" uuid="afb62cc5-0a71-4b23-9439-01a39c73a352"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="270" y="10" width="120" height="25" forecolor="#1A237E" uuid="60b20b3e-bcd8-451f-b5d0-16b3eaa79e9d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement x="390" y="10" width="150" height="25" forecolor="#1A237E" uuid="048f221f-5715-4172-bce7-bc1305de276f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ingreso_total_REPORT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

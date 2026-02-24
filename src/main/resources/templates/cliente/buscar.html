@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Buscar Cliente')}"></head>
+<body>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box">
+        <div class="modal-icon">!</div>
+        <div class="modal-title">// Confirmar eliminación</div>
+        <div class="modal-msg">¿Estás seguro que deseas eliminar este cliente? Esta acción no se puede deshacer.</div>
+        <div class="modal-actions">
+            <a id="btnConfirmarEliminar" href="#" class="btn btn-danger">SÍ, ELIMINAR</a>
+            <button onclick="cerrarModal()" class="btn btn-outline">CANCELAR</button>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/sidebar :: sidebar('buscar-cliente')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">BUSCAR CLIENTE</span>
+        
+    </div>
+
+    <div class="content">
+
+        <!-- Barra de búsqueda -->
+        <form th:action="@{/cliente/buscar}" method="get"
+              style="display:flex; gap:0; max-width:600px; margin-bottom:28px;">
+            <input type="text" name="termino" th:value="${termino}"
+                   placeholder="Buscar por nombre, apellido o DNI..."
+                   autocomplete="off" style="flex:1;">
+            <button type="submit" class="btn btn-primary">BUSCAR →</button>
+        </form>
+
+        <!-- Hint inicial -->
+        <div th:if="${termino == null}"
+             style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+                    letter-spacing:2px; padding:40px 0; text-align:center;">
+            // Ingresa un nombre, apellido o DNI para buscar
+        </div>
+
+        <div th:if="${termino != null}">
+
+            <div th:if="${#lists.isEmpty(clientes)}" class="alert alert-danger">
+                ✗ Sin resultados para "<span th:text="${termino}"></span>"
+            </div>
+
+            <div th:unless="${#lists.isEmpty(clientes)}">
+
+                <!-- Tabla de clientes encontrados -->
+                <div class="table-wrap" style="margin-bottom:28px;">
+                    <div class="table-toolbar">
+                        <div class="table-toolbar-left">
+                            <span class="table-label">// Resultados</span>
+                            <span class="table-count"
+                                  th:text="${#lists.size(clientes)} + ' cliente(s) encontrado(s)'"></span>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>DNI</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : ${clientes}">
+                                <td th:text="${c.nombres}" style="color:var(--text); font-weight:500;"></td>
+                                <td th:text="${c.apellidos}"></td>
+                                <td th:text="${c.dni}"
+                                    style="font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--accent);"></td>
+                                <td th:text="${c.telefono}"></td>
+                                <td th:text="${c.email}"></td>
+                                <td>
+                                    <div class="td-actions">
+                                        <a th:href="@{/cliente/buscar(termino=${termino}, idCliente=${c.idCliente})}"
+                                           class="btn btn-outline btn-sm">HISTORIAL</a>
+                                        <a th:href="@{/cliente/edit/{id}(id=${c.idCliente})}"
+                                           class="btn btn-outline btn-sm">EDITAR</a>
+                                        <button class="btn btn-danger btn-sm"
+                                                th:onclick="'abrirModal(\'/cliente/' + ${c.idCliente} + '\')'">
+                                            ELIMINAR
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Historial del cliente seleccionado -->
+                <div th:if="${clienteSeleccionado != null}">
+                    <div style="background:var(--surface); border:1px solid var(--border);
+                                border-left:3px solid var(--accent); padding:16px 20px; margin-bottom:16px;">
+                        <div style="font-family:'IBM Plex Mono',monospace; font-size:9px;
+                                    color:var(--muted); letter-spacing:2px; margin-bottom:8px;">// CLIENTE SELECCIONADO</div>
+                        <div style="font-size:18px; font-weight:600; color:var(--text);"
+                             th:text="${clienteSeleccionado.nombres} + ' ' + ${clienteSeleccionado.apellidos}"></div>
+                        <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); margin-top:4px;"
+                             th:text="'DNI: ' + ${clienteSeleccionado.dni} + '  |  Tel: ' + ${clienteSeleccionado.telefono}"></div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <div class="table-toolbar">
+                            <div class="table-toolbar-left">
+                                <span class="table-label">// Historial de Inscripciones</span>
+                                <span class="table-count"
+                                      th:text="${#lists.size(historial)} + ' inscripción(es)'"></span>
+                            </div>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Plan</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Total (S/.)</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="i, stat : ${historial}">
+                                    <td th:text="${stat.count}"></td>
+                                    <td th:text="${i.plan.nombre}" style="color:var(--text); font-weight:500;"></td>
+                                    <td th:text="${i.fechaInicio}"
+                                        style="font-family:'IBM Plex Mono',monospace; font-size:13px;"></td>
+                                    <td th:text="${i.fechaFin}"
+                                        style="font-family:'IBM Plex Mono',monospace; font-size:13px;"></td>
+                                    <td th:text="${#numbers.formatDecimal(i.total,1,2)}"
+                                        style="color:var(--accent); font-family:'IBM Plex Mono',monospace;"></td>
+                                    <td>
+                                        <span th:if="${i.fechaFin >= #temporals.createToday()}"
+                                              class="tag tag-active">ACTIVA</span>
+                                        <span th:unless="${i.fechaFin >= #temporals.createToday()}"
+                                              class="tag tag-expired">VENCIDA</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(historial)}">
+                                    <td colspan="6" style="text-align:center; color:var(--muted); padding:28px;">
+                                        // Este cliente no tiene inscripciones registradas
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function abrirModal(url) {
+        document.getElementById('btnConfirmarEliminar').href = url;
+        document.getElementById('modalEliminar').classList.add('open');
+    }
+    function cerrarModal() {
+        document.getElementById('modalEliminar').classList.remove('open');
+    }
+    document.getElementById('modalEliminar').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModal();
+    });
+</script>
+
+</body>
+</html>

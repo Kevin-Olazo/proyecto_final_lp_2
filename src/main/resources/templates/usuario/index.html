@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Usuarios')}"></head>
+<body>
+
+<div th:replace="~{layout/sidebar :: sidebar('usuarios')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">USUARIOS</span>
+    </div>
+
+    <div class="content">
+        <div class="table-wrap">
+            <div class="table-toolbar">
+                <div class="table-toolbar-left">
+                    <span class="table-label">// Listado de Usuarios</span>
+                </div>
+                <a th:href="@{/usuario/new}" class="btn btn-primary">+ NUEVO USUARIO</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="u, stat : ${usuarios}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${u.nombres}" style="color:var(--text); font-weight:500;"></td>
+                        <td th:text="${u.apellidos}"></td>
+                        <td th:text="${u.username}"
+                            style="font-family:'IBM Plex Mono',monospace; font-size:13px;"></td>
+                        <td>
+                            <span class="tag tag-active" th:text="${u.rol?.descripcion}"></span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="5" style="text-align:center; color:var(--muted); padding:32px;">
+                            // Sin registros
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

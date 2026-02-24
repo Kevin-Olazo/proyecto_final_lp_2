@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Inscripciones')}"></head>
+<body>
+
+<div th:replace="~{layout/sidebar :: sidebar('inscripciones')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">INSCRIPCIONES</span>
+     
+    </div>
+
+    <div class="content">
+        <div class="table-wrap">
+            <div class="table-toolbar">
+                <div class="table-toolbar-left">
+                    <span class="table-label">// Historial Completo</span>
+                    <span class="table-count"
+                          th:text="${#lists.size(inscripciones)} + ' registro(s)'"></span>
+                </div>
+                <a th:href="@{/inscripcion/new}" class="btn btn-primary">+ NUEVA INSCRIPCIÓN</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Plan</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Total (S/.)</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="i, stat : ${inscripciones}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${i.cliente.nombres} + ' ' + ${i.cliente.apellidos}"
+                            style="color:var(--text); font-weight:500;"></td>
+                        <td th:text="${i.plan.nombre}"></td>
+                        <td th:text="${i.fechaInicio}"
+                            style="font-family:'IBM Plex Mono',monospace; font-size:13px;"></td>
+                        <td th:text="${i.fechaFin}"
+                            style="font-family:'IBM Plex Mono',monospace; font-size:13px;"></td>
+                        <td th:text="${#numbers.formatDecimal(i.total,1,2)}"
+                            style="color:var(--accent); font-family:'IBM Plex Mono',monospace;"></td>
+                        <td>
+                            <span th:if="${i.fechaFin >= #temporals.createToday()}"
+                                  class="tag tag-active">ACTIVA</span>
+                            <span th:unless="${i.fechaFin >= #temporals.createToday()}"
+                                  class="tag tag-expired">VENCIDA</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(inscripciones)}">
+                        <td colspan="7" style="text-align:center; color:var(--muted); padding:32px;">
+                            // Sin registros
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

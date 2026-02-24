@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Planes')}"></head>
+<body>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box">
+        <div class="modal-icon">!</div>
+        <div class="modal-title">// Confirmar eliminación</div>
+        <div class="modal-msg">¿Estás seguro que deseas eliminar este plan? Esta acción no se puede deshacer.</div>
+        <div class="modal-actions">
+            <a id="btnConfirmarEliminar" href="#" class="btn btn-danger">SÍ, ELIMINAR</a>
+            <button onclick="cerrarModal()" class="btn btn-outline">CANCELAR</button>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/sidebar :: sidebar('planes')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">PLANES</span>
+        
+    </div>
+
+    <div class="content">
+
+        <!-- Mensaje de error al intentar eliminar plan con inscripciones -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="table-wrap">
+            <div class="table-toolbar">
+                <div class="table-toolbar-left">
+                    <span class="table-label">// Listado de Planes</span>
+                </div>
+                <a th:if="${session.usuarioLogueado?.rol?.descripcion == 'Administrador'}"
+                   th:href="@{/plan/new}" class="btn btn-primary">+ NUEVO PLAN</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Duración (días)</th>
+                        <th>Precio (S/.)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p, stat : ${planes}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${p.nombre}" style="color:var(--text); font-weight:500;"></td>
+                        <td th:text="${p.descripcion}"></td>
+                        <td th:text="${p.duracionDias}"></td>
+                        <td th:text="${#numbers.formatDecimal(p.precio,1,2)}"
+                            style="color:var(--accent); font-family:'IBM Plex Mono',monospace;"></td>
+                        <td>
+                            <div class="td-actions"
+                                 th:if="${session.usuarioLogueado?.rol?.descripcion == 'Administrador'}">
+                                <a th:href="@{/plan/edit/{id}(id=${p.idPlan})}"
+                                   class="btn btn-outline btn-sm">EDITAR</a>
+                                <button class="btn btn-danger btn-sm"
+                                        th:onclick="'abrirModal(\'/plan/' + ${p.idPlan} + '\')'">
+                                    ELIMINAR
+                                </button>
+                            </div>
+                            <span th:unless="${session.usuarioLogueado?.rol?.descripcion == 'Administrador'}"
+                                  class="readonly-label">—</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(planes)}">
+                        <td colspan="6" style="text-align:center; color:var(--muted); padding:32px;">
+                            // Sin registros
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModal(url) {
+        document.getElementById('btnConfirmarEliminar').href = url;
+        document.getElementById('modalEliminar').classList.add('open');
+    }
+    function cerrarModal() {
+        document.getElementById('modalEliminar').classList.remove('open');
+    }
+    document.getElementById('modalEliminar').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModal();
+    });
+</script>
+
+</body>
+</html>

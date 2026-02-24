@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Clientes')}"></head>
+<body>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box">
+        <div class="modal-icon">!</div>
+        <div class="modal-title">// Confirmar eliminación</div>
+        <div class="modal-msg">¿Estás seguro que deseas eliminar este cliente? Esta acción no se puede deshacer.</div>
+        <div class="modal-actions">
+            <a id="btnConfirmarEliminar" href="#" class="btn btn-danger">SÍ, ELIMINAR</a>
+            <button onclick="cerrarModal()" class="btn btn-outline">CANCELAR</button>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/sidebar :: sidebar('clientes')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">CLIENTES</span>
+        
+    </div>
+
+    <div class="content">
+
+        <!-- Mensaje de error al intentar eliminar cliente con inscripciones -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Stat único -->
+        <div style="background:var(--surface); border:1px solid var(--border);
+                    display:inline-flex; align-items:center; gap:20px;
+                    padding:16px 28px; margin-bottom:24px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px;
+                        color:var(--muted); letter-spacing:2px; text-transform:uppercase;">
+                TOTAL CLIENTES
+            </div>
+            <div style="font-family:'Bebas Neue',sans-serif; font-size:48px;
+                        color:var(--accent); line-height:1;"
+                 th:text="${#lists.size(clientes)}">0</div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="table-toolbar">
+                <div class="table-toolbar-left">
+                    <span class="table-label">// Listado de Clientes</span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    
+                    <a th:href="@{/cliente/new}" class="btn btn-primary">+ NUEVO CLIENTE</a>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>DNI</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="c, stat : ${clientes}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${c.nombres}" style="color:var(--text); font-weight:500;"></td>
+                        <td th:text="${c.apellidos}"></td>
+                        <td th:text="${c.dni}" style="font-family:'IBM Plex Mono',monospace; font-size:13px;"></td>
+                        <td th:text="${c.telefono}"></td>
+                        <td th:text="${c.email}"></td>
+                        <td>
+                            <div class="td-actions">
+                                <a th:href="@{/cliente/edit/{id}(id=${c.idCliente})}"
+                                   class="btn btn-outline btn-sm">EDITAR</a>
+                                <button class="btn btn-danger btn-sm"
+                                        th:onclick="'abrirModal(\'/cliente/' + ${c.idCliente} + '\')'">
+                                    ELIMINAR
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(clientes)}">
+                        <td colspan="7" style="text-align:center; color:var(--muted); padding:32px;">
+                            // Sin registros
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModal(url) {
+        document.getElementById('btnConfirmarEliminar').href = url;
+        document.getElementById('modalEliminar').classList.add('open');
+    }
+    function cerrarModal() {
+        document.getElementById('modalEliminar').classList.remove('open');
+    }
+    // Cerrar al hacer clic fuera del modal
+    document.getElementById('modalEliminar').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModal();
+    });
+</script>
+
+</body>
+</html>

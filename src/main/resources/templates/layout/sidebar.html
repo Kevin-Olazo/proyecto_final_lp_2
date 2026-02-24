@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- SIDEBAR FRAGMENT -->
+<aside th:fragment="sidebar(paginaActiva)" class="sidebar">
+
+    <div class="logo-area">
+        <div class="logo-title">ZONA<br>FITNESS</div>        
+    </div>
+
+    <nav class="nav">
+
+        <!-- MANTENIMIENTO — visible para ADMIN y RECEPCIONISTA -->
+        <div class="nav-section">// Mantenimiento</div>
+
+        <!-- Solo ADMIN puede gestionar usuarios -->
+        <a th:if="${session.usuarioLogueado?.rol?.descripcion == 'Administrador'}"
+           th:href="@{/usuario}"
+           th:classappend="${paginaActiva == 'usuarios'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Usuarios
+        </a>
+
+        <a th:href="@{/plan}"
+           th:classappend="${paginaActiva == 'planes'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Planes
+        </a>
+
+        <a th:href="@{/cliente}"
+           th:classappend="${paginaActiva == 'clientes'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Clientes
+        </a>
+
+        <!-- OPERACIONES -->
+        <div class="nav-section">// Operaciones</div>
+
+        <a th:href="@{/inscripcion/new}"
+           th:classappend="${paginaActiva == 'nueva-inscripcion'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Nueva Inscripción
+        </a>
+
+        <a th:href="@{/inscripcion}"
+           th:classappend="${paginaActiva == 'inscripciones'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Historial Ventas
+        </a>
+
+        <!-- CONSULTAS -->
+        <div class="nav-section">// Consultas</div>
+
+        <a th:href="@{/inscripcion/activas}"
+           th:classappend="${paginaActiva == 'activas'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Activas
+        </a>
+
+        <a th:href="@{/cliente/buscar}"
+           th:classappend="${paginaActiva == 'buscar-cliente'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Buscar Cliente
+        </a>
+
+        <!-- REPORTES — solo ADMIN -->
+        <div th:if="${session.usuarioLogueado?.rol?.descripcion == 'Administrador'}"
+             class="nav-section">// Reportes</div>
+
+        <a th:if="${session.usuarioLogueado?.rol?.descripcion == 'Administrador'}"
+           th:href="@{/reporte/ingresos}"
+           th:classappend="${paginaActiva == 'rep-ingresos'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Ingresos / Mes
+        </a>
+
+        <a th:if="${session.usuarioLogueado?.rol?.descripcion == 'Administrador'}"
+           th:href="@{/reporte/planes}"
+           th:classappend="${paginaActiva == 'rep-planes'} ? 'active'"
+           class="nav-item">
+            <span class="nav-dot"></span> Planes Top
+        </a>
+
+    </nav>
+
+    <!-- SESIÓN ACTIVA -->
+    <div class="session-area">
+        <div class="session-label">Sesión</div>
+        <div class="session-user" th:text="${session.usuarioLogueado?.nombres} + ' ' + ${session.usuarioLogueado?.apellidos}">Admin</div>
+        <div class="session-role" th:text="${session.usuarioLogueado?.rol?.descripcion}">ROL</div>
+        <a th:href="@{/logout}" class="btn-logout">[ CERRAR SESIÓN ]</a>
+    </div>
+
+</aside>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+package com.ciberedu.proyectolpii;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ProyectoLpiiApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

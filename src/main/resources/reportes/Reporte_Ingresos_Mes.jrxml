@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Ingresos_Mes" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="20">
+    <queryString language="SQL"><![CDATA[
+        SELECT anio, mes, cantidad_inscripciones, ingreso_total
+        FROM dbgimnasio.vista_ingresos_por_mes
+        ORDER BY anio DESC, mes DESC
+    ]]></queryString>
+
+    <field name="anio" class="java.lang.Integer"/>
+    <field name="mes" class="java.lang.Integer"/>
+    <field name="cantidad_inscripciones" class="java.lang.Long"/>
+    <field name="ingreso_total" class="java.math.BigDecimal"/>
+
+    <variable name="ingreso_total_REPORT" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{ingreso_total}]]></variableExpression>
+    </variable>
+
+    <title>
+        <band height="65" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="50" backcolor="#1A237E"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="15" y="10" width="525" height="30" forecolor="#FFFFFF"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[ZONA FITNESS — Reporte de Ingresos por Mes]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="28" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="25" backcolor="#3F51B5"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="15" y="0" width="95" height="25" forecolor="#FFFFFF"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[AÑO]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="110" y="0" width="130" height="25" forecolor="#FFFFFF"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[MES]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="240" y="0" width="140" height="25" forecolor="#FFFFFF"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[INSCRIPCIONES]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="380" y="0" width="160" height="25" forecolor="#FFFFFF"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[INGRESOS (S/.)]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="25" splitType="Stretch">
+            <textField>
+                <reportElement x="15" y="0" width="95" height="24"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="110" y="0" width="130" height="24"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new String[]{"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"}[$F{mes} - 1]]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="240" y="0" width="140" height="24"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cantidad_inscripciones}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="380" y="0" width="160" height="24"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ingreso_total}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="24" width="555" height="1" forecolor="#E0E0E0"/>
+            </line>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="40" splitType="Stretch">
+            <rectangle>
+                <reportElement x="240" y="10" width="315" height="25" backcolor="#F5F5F5"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+            <line>
+                <reportElement x="0" y="2" width="555" height="1" forecolor="#1A237E"/>
+                <graphicElement>
+                    <pen lineWidth="2.0"/>
+                </graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="250" y="10" width="130" height="25" forecolor="#1A237E"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL GENERAL:]]></text>
+            </staticText>
+            <textField pattern="#,##0.00">
+                <reportElement x="380" y="10" width="160" height="25" forecolor="#1A237E"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{ingreso_total_REPORT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

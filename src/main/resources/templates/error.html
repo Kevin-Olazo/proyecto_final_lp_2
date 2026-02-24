@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error | ZONA FITNESS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #f5f5f5;
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-wrap {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px 20px;
+        }
+
+        .error-code {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 120px;
+            line-height: 1;
+            color: #ff3c00;
+            letter-spacing: 6px;
+        }
+
+        .error-line {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #555;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin: 8px 0 28px;
+        }
+
+        .error-msg {
+            font-size: 15px;
+            color: #888;
+            line-height: 1.7;
+            margin-bottom: 36px;
+        }
+
+        .btn-back {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 10px 24px;
+            background: #e8ff00;
+            color: #000;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.15s;
+        }
+
+        .btn-back:hover { background: #d4ea00; }
+
+        .error-detail {
+            margin-top: 28px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: #333;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="error-wrap">
+
+    <!-- Código de error dinámico, o 500 por defecto -->
+    <div class="error-code" th:text="${status} ?: '500'">500</div>
+
+    <div class="error-line">
+        // ZONA FITNESS — ERROR DEL SISTEMA
+    </div>
+
+    <p class="error-msg">
+        <!-- Mensaje según el código de error -->
+        <span th:if="${status == 404}">
+            La página que buscas no existe o fue movida.
+        </span>
+        <span th:if="${status == 403}">
+            No tienes permiso para acceder a esta sección.
+        </span>
+        <span th:if="${status == 500}">
+            Ocurrió un error interno en el servidor.<br>
+            Si el problema persiste, comunícate con el administrador.
+        </span>
+        <span th:unless="${status == 404 or status == 403 or status == 500}">
+            Ocurrió un error inesperado. Vuelve al inicio e intenta de nuevo.
+        </span>
+    </p>
+
+    <a href="/inscripcion/new" class="btn-back">← VOLVER</a>
+
+    <!-- Detalles técnicos -->
+    <div class="error-detail" th:if="${message}" th:text="${message}"></div>
+
+</div>
+
+</body>
+</html>

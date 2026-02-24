@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Nueva Inscripción')}"></head>
+<body>
+
+<div th:replace="~{layout/sidebar :: sidebar('nueva-inscripcion')}"></div>
+
+<div class="main">
+    <div class="topbar">
+        <span class="page-title">NUEVA INSCRIPCIÓN</span>
+        
+    </div>
+
+    <div class="content">
+
+        <div th:if="${mensaje}"
+             th:classappend="${clase == 'success'} ? 'alert-success' : 'alert-danger'"
+             class="alert" th:text="${mensaje}"></div>
+
+        <div class="form-wrap" style="max-width:620px;">
+            <div class="form-header">
+                <div class="form-title">// Registrar Inscripción</div>
+            </div>
+
+            <form th:action="@{/inscripcion}" th:object="${inscripcion}" method="post">
+                <div class="form-body">
+
+                    <!-- BÚSQUEDA DE CLIENTE EN VIVO -->
+                    <div class="form-group">
+                        <label>Cliente</label>
+
+                        <!-- Contenedor relativo para el dropdown -->
+                        <div style="position:relative;">
+                            <input type="text" id="clienteBusqueda"
+                                   placeholder="Escribe nombre, apellido o DNI..."
+                                   autocomplete="off"
+                                   oninput="filtrarClientes(this.value)"
+                                   onfocus="mostrarDropdown()"
+                                   onblur="setTimeout(ocultarDropdown, 200)">
+
+                            <!-- Dropdown — ahora dentro del contenedor relativo y con z-index correcto -->
+                            <div id="clienteDropdown"
+                                 style="display:none; position:absolute; top:100%; left:0; right:0;
+                                        z-index:500; max-height:200px; overflow-y:auto;
+                                        background:var(--surface2); border:1px solid var(--accent);
+                                        border-top:none; margin-top:0;">
+                            </div>
+                        </div>
+
+                        <!-- Badge del cliente seleccionado -->
+                        <div id="clienteSeleccionado"
+                             style="display:none; margin-top:8px; padding:9px 13px;
+                                    background:rgba(232,255,0,0.06); border:1px solid rgba(232,255,0,0.25);
+                                    font-size:13px; color:var(--text);">
+                            <span id="clienteSeleccionadoTexto"></span>
+                            <button type="button" onclick="limpiarCliente()"
+                                    style="float:right; background:none; border:none; color:var(--muted);
+                                           cursor:pointer; font-size:16px; line-height:1;">×</button>
+                        </div>
+
+                        <input type="hidden" id="clienteId" th:field="*{cliente}">
+                    </div>
+
+                    <!-- PLAN -->
+                    <div class="form-group">
+                        <label>Plan</label>
+                        <select th:field="*{plan}" required onchange="actualizarResumen(this)">
+                            <option value="">— Seleccionar plan —</option>
+                            <option th:each="p : ${planList}"
+                                    th:value="${p.idPlan}"
+                                    th:text="${p.nombre} + ' — ' + ${p.duracionDias} + ' días'"
+                                    th:data-precio="${p.precio}"
+                                    th:data-dias="${p.duracionDias}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Resumen -->
+                    <div id="plan-resumen" style="display:none; background:var(--surface2);
+                         border:1px solid var(--border); padding:14px 16px;">
+                        <div style="font-family:'IBM Plex Mono',monospace; font-size:8px;
+                                    color:var(--muted); letter-spacing:2px; margin-bottom:10px;">// RESUMEN</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:13px; color:var(--text-dim);">Total a cobrar:</span>
+                            <span id="resumen-precio"
+                                  style="font-family:'Bebas Neue',sans-serif; font-size:32px;
+                                         color:var(--accent); letter-spacing:1px;"></span>
+                        </div>
+                        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px;
+                                    color:var(--muted); margin-top:4px;" id="resumen-duracion"></div>
+                    </div>
+
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary">REGISTRAR INSCRIPCIÓN →</button>
+                    <a th:href="@{/inscripcion}" class="btn btn-outline">CANCELAR</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const todosClientes = /*[[${clienteList}]]*/ [];
+
+    function filtrarClientes(termino) {
+        const dropdown = document.getElementById('clienteDropdown');
+        if (!termino || termino.length < 2) { dropdown.style.display = 'none'; return; }
+
+        const t = termino.toLowerCase();
+        const resultados = todosClientes.filter(c =>
+            (c.nombres && c.nombres.toLowerCase().includes(t)) ||
+            (c.apellidos && c.apellidos.toLowerCase().includes(t)) ||
+            (c.dni && c.dni.includes(t))
+        ).slice(0, 8);
+
+        if (resultados.length === 0) {
+            dropdown.innerHTML = '<div style="padding:10px 14px; font-size:13px; color:var(--muted);">Sin resultados</div>';
+        } else {
+            dropdown.innerHTML = resultados.map(c => `
+                <div onclick="seleccionarCliente(${c.idCliente}, '${c.nombres} ${c.apellidos}', '${c.dni}')"
+                     style="padding:10px 14px; cursor:pointer; font-size:13px; color:var(--text-dim);
+                            border-bottom:1px solid var(--border);"
+                     onmouseover="this.style.background='rgba(232,255,0,0.06)'"
+                     onmouseout="this.style.background='transparent'">
+                    <strong style="color:var(--text);">${c.nombres} ${c.apellidos}</strong>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px;
+                                 color:var(--accent); margin-left:10px;">${c.dni}</span>
+                </div>
+            `).join('');
+        }
+        dropdown.style.display = 'block';
+    }
+
+    function seleccionarCliente(id, nombre, dni) {
+        document.getElementById('clienteId').value = id;
+        document.getElementById('clienteBusqueda').value = '';
+        document.getElementById('clienteBusqueda').placeholder = nombre;
+        const badge = document.getElementById('clienteSeleccionado');
+        document.getElementById('clienteSeleccionadoTexto').textContent = '✓ ' + nombre + ' — DNI: ' + dni;
+        badge.style.display = 'flex';
+        document.getElementById('clienteDropdown').style.display = 'none';
+    }
+
+    function limpiarCliente() {
+        document.getElementById('clienteId').value = '';
+        document.getElementById('clienteBusqueda').placeholder = 'Escribe nombre, apellido o DNI...';
+        document.getElementById('clienteBusqueda').value = '';
+        document.getElementById('clienteSeleccionado').style.display = 'none';
+    }
+
+    function mostrarDropdown() {
+        const t = document.getElementById('clienteBusqueda').value;
+        if (t.length >= 2) filtrarClientes(t);
+    }
+
+    function ocultarDropdown() {
+        document.getElementById('clienteDropdown').style.display = 'none';
+    }
+
+    function actualizarResumen(select) {
+        const opt = select.options[select.selectedIndex];
+        const precio = opt.getAttribute('data-precio');
+        const dias   = opt.getAttribute('data-dias');
+        const div    = document.getElementById('plan-resumen');
+        if (precio) {
+            document.getElementById('resumen-precio').textContent = 'S/. ' + parseFloat(precio).toFixed(2);
+            document.getElementById('resumen-duracion').textContent = '// Duración: ' + dias + ' días';
+            div.style.display = 'block';
+        } else {
+            div.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
